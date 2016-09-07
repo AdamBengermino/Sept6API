@@ -1,0 +1,105 @@
+package localhost.googlemaps.directions;
+
+import java.io.BufferedReader; 
+import java.io.IOException; 
+import java.io.InputStreamReader; 
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException; 
+import java.net.URL; 
+import java.net.URLEncoder; 
+
+
+/**
+ * Class practice, chaning modes of transport, language, etc.
+ * @author Adam Bengermino
+ * @since 2016-09-06
+ *
+ */
+
+public class RestRequestPractice 
+{
+/**
+ * The URL of the API we want to connect to
+ */
+	
+	protected static String endpoint = "https://maps.google.com/maps/api/directions/";
+	
+/**
+ * The character set to use when encoding URL parameters
+ */
+	protected static String charset = "UTF-8"; 
+
+/**
+ * API key used for making requests to API
+ */
+	
+	protected static String key = "AIzaSyAI-b0OwKFzq2tHeLht0JiYzgN2kF6k_l8";
+
+	public static void main(String[] args) 
+	{
+		try
+		{
+			//The origin or starting point for directions
+			String origin = "Eldersburg, MD"; 
+			
+			//The destination or end point for directions
+			String destination = "Salem, MA"; 
+			
+			//The return type of response XML | JSON
+			String returnType = "json"; 
+			
+			//Change the mode from English to Norwegian
+			String language = "no"; 
+			
+			//Add a waypoint
+			String waypoints = "Sleepy Hollow, NY"; 
+			
+			//Avoid tolls and highways
+			String avoid = "tolls|highways"; 
+			
+			//creates the URL parameters as a string encoding them with the defined charset
+			String queryString = String.format("origin=%s&destination=%s&key=%s&language=%s&waypoint=%s&avoid=%s", 
+					URLEncoder.encode(origin, charset),
+					URLEncoder.encode(destination, charset),
+					URLEncoder.encode(key, charset),
+					URLEncoder.encode(language, charset), 
+					URLEncoder.encode(waypoints, charset), 
+					URLEncoder.encode(avoid, charset));
+			
+			//creates a new URL out of the endpoint, returnType and queryString
+			URL googleDirections = new URL(endpoint + returnType + "?" + queryString); 
+			HttpURLConnection connection = (HttpURLConnection) googleDirections.openConnection();
+			
+			//if we did not get a 200 (success) throw an exception
+			if(connection.getResponseCode() != 200)
+			{
+				throw new RuntimeException("Failed : HTTP error code: " + connection.getResponseCode());
+			}
+			
+			//read response into buffer
+			BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+			
+			//loop of buffer reader line by line until it returns null meaning there are no more lines
+			while (br.readLine() != null)
+			{
+				//print out each line to the screen
+				System.out.println(br.readLine());
+			}
+			
+			//close connection to API
+			
+			connection.disconnect(); 
+		}//try
+		
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+		}
+		
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}//main
+	
+}//class

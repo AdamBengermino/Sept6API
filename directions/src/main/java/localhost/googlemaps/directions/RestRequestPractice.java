@@ -10,7 +10,7 @@ import java.net.URLEncoder;
 
 
 /**
- * Class practice, chaning modes of transport, language, etc.
+ * Class practice, changing modes of transport, language, etc.
  * @author Adam Bengermino
  * @since 2016-09-06
  *
